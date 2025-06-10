@@ -1,75 +1,25 @@
-
-class Team {
-  constructor(x,y, w, h, color) {
-    this.name = color
-    this.x = x
-    this.y = y
-    this.w = w
-    this.h = h
-    this.color = color
+/*Classe que representa um time e sua trave*/
+export class Time {
+  constructor(x, w, h, cor) {
+    this.x = x; // posição horizontal fixa da trave
+    this.w = w; // largura da trave
+    this.h = h; // altura da trave (tamanho ajustável)
+    this.cor = cor; // cor do time
+    this.bolasQuantidade = 10; // quantidade inicial de bolas
+    this.bolasVelocidade = 5; // velocidade inicial das bolas
+    this.gols = 0; // contador de gols do time
+    this.atualizarY(); // calcula a posição vertical inicial da trave
   }
 
-  draw() {
-    ctx.fillStyle = this.color;
-    ctx.fillRect(this.x,this.y, this.w, this.h);
+  /*Atualizar a posição vertical da trave para centralizá-la*/
+  atualizarY() {
+    this.y = 600 / 2 - this.h / 2; // canvas tem altura fixa em 600px
+  }
+
+  /*Desenhar a trave do time*/
+  desenhar(ctx) {
+    this.atualizarY(); // garante que a trave esteja centralizada verticalmente
+    ctx.fillStyle = this.cor; // define a cor da trave
+    ctx.fillRect(this.x, this.y, this.w, this.h); // desenha o retângulo da trave
   }
 }
-
-const balls = [];
-let team_red = new Team(0, height/2 - 50, 30, 100, "red")
-let team_blue = new Team(width - 30, height/2 - 50, 30, 100, "blue")
-
-
-function start(){
-  for (let i = 0; i < team_red.balls_count; i++) {
-    const size = random(10, 20);
-    const ball_red = new Ball(
-      // ball position always drawn at least one ball width
-      // away from the edge of the canvas, to avoid drawing errors
-      random(0 + size, width - size),
-      random(0 + size, height - size),
-      random(1,20),
-      random(-7, 7),
-      "red",
-      size
-    );
-    balls.push(ball_red);
-  }
-  for (let i = 0; i < team_blue.balls_count; i++)  {
-    const size = random(10, 20);
-    const ball_blue = new Ball(
-      // ball position always drawn at least one ball width
-      // away from the edge of the canvas, to avoid drawing errors
-      random(0 + size, width - size),
-      random(0 + size, height - size),
-      random(1,20),
-      random(-7, 7),
-      "blue",
-      size
-    );
-    balls.push(ball_blue);
-  }
-  
-}
-
-
-
-
-function loop() {
-  ctx.fillStyle = "rgba(101, 250, 100, 0.25)";
-  ctx.fillRect(0, 0, width, height);
-
-  team_red.draw()
-  
-  team_blue.draw()
-
-  for (const ball of balls) {
-    ball.draw();
-    ball.update();
-    ball.collisionDetect(team_red, team_blue);
-  }
-
-  requestAnimationFrame(loop);
-}
-
-loop();
